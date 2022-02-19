@@ -1,5 +1,6 @@
 import { getInput, error } from "@actions/core";
-import { generateLicenseFile, isValidEol } from "generate-license-file/dist/generateLicenseFile";
+import { isValidEol } from "generate-license-file/dist/generateLicenseFile";
+import { generateLicenseFile } from "generate-license-file";
 
 const main = async () => {
   try {
