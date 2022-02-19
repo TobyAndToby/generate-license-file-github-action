@@ -1,0 +1,42 @@
+{
+  "private": true,
+  "name": "generate-license-file-github-action",
+  "version": "0.0.0",
+  "description": "Generates a text file containing all of the licences for your production dependencies",
+  "main": "dist/main.js",
+  "license": "ISC",
+  "scripts": {
+  },
+  "contributors": [
+    {
+      "name": "Toby Smith",
+      "url": "https://github.com/tobysmith568"
+    },
+    {
+      "name": "Toby Bessant",
+      "url": "https://github.com/tobybessant"
+    }
+  ],
+  "files": [
+    "dist"
+  ],
+  "keywords": [
+    "github",
+    "action",
+    "license",
+    "licence",
+    "third",
+    "party",
+    "file",
+    "generate",
+    "oss"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TobyAndToby/generate-license-file-github-action.git"
+  },
+  "bugs": {
+    "url": "https://github.com/TobyAndToby/generate-license-file-github-action/issues"
+  },
+  "homepage": "https://github.com/TobyAndToby/generate-license-file-github-action#readme"
+}
