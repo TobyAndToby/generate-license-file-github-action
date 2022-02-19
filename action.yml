@@ -1,0 +1,21 @@
+name: "Generate License File"
+author: "TobyAndToby"
+description: "Generates a text file containing all of the licences for your production dependencies"
+inputs:
+  input:
+    description: "Location of the package.json file relative to the repo root"
+    required: true
+    default: "./package.json"
+  output:
+    description: "Location for the generated licences file"
+    required: true
+    default: "./third-party-licenses.txt"
+  lineEnding:
+    description: "Line ending for the generated file. Uses agent's default line ending if not specified"
+    required: false  
+runs:
+  using: "node16"
+  main: "./dist/index.js"
+branding:
+  color: "dark-grey"
+  icon: "align-left"
