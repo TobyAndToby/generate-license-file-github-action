@@ -8,7 +8,7 @@
   "scripts": {
     "build": "del-cli ./dist && ncc build src/main.ts -o dist --license third-party-licenses.txt",
     "test": "jest ./test",
-    "text:ci": "jest ./text --ci"
+    "test:ci": "jest ./text --ci"
   },
   "contributors": [
     {
