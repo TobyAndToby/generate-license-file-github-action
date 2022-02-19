@@ -38,6 +38,10 @@
     "url": "https://github.com/TobyAndToby/generate-license-file-github-action/issues"
   },
   "homepage": "https://github.com/TobyAndToby/generate-license-file-github-action#readme",
+  "dependencies": {
+    "@actions/core": "^1.6.0",
+    "generate-license-file": "^1.3.0"
+  },
   "devDependencies": {
     "typescript": "^4.5.5"
   }
