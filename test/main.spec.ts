@@ -1,4 +1,4 @@
-import { error, getInput } from "@actions/core";
+import { getInput, setFailed } from "@actions/core";
 import { generateLicenseFile } from "generate-license-file";
 import { when } from "jest-when";
 
@@ -9,7 +9,7 @@ jest.mock("generate-license-file", () => ({
 
 describe("main", () => {
   const mockedGetInput = jest.mocked(getInput);
-  const mockedError = jest.mocked(error);
+  const mockedSetFailed = jest.mocked(setFailed);
   const mockedGenerateLicenseFile = jest.mocked(generateLicenseFile);
 
   beforeEach(() => {
@@ -25,7 +25,7 @@ describe("main", () => {
       jest.requireActual("../src/main");
     });
 
-    expect(mockedGetInput).toHaveBeenCalledWith("input");
+    expect(mockedGetInput).toHaveBeenCalledWith("input", { required: true });
   });
 
   it("should get the output input", async () => {
@@ -33,7 +33,7 @@ describe("main", () => {
       jest.requireActual("../src/main");
     });
 
-    expect(mockedGetInput).toHaveBeenCalledWith("output");
+    expect(mockedGetInput).toHaveBeenCalledWith("output", { required: true });
   });
 
   it("should get the lineEnding input", async () => {
@@ -61,6 +61,23 @@ describe("main", () => {
     expect(mockedGenerateLicenseFile).toHaveBeenCalledWith(input, output, lineEnding);
   });
 
+  it("should call generate-licence-file with an undefined lineEnding when it's given as an empty string", async () => {
+    const input = "./package.json";
+    const output = "./third-party-licenses.txt";
+    const lineEnding = "";
+
+    mockInput(input);
+    mockOutput(output);
+    mockLineEnding(lineEnding);
+
+    jest.isolateModules(() => {
+      jest.requireActual("../src/main");
+    });
+
+    expect(mockedGenerateLicenseFile).toHaveBeenCalledTimes(1);
+    expect(mockedGenerateLicenseFile).toHaveBeenCalledWith(input, output, undefined);
+  });
+
   it("should not call generate-licence-file when the lineEnding is invalid", async () => {
     const input = "./package.json";
     const output = "./third-party-licenses.txt";
@@ -77,7 +94,7 @@ describe("main", () => {
     expect(mockedGenerateLicenseFile).toHaveBeenCalledTimes(0);
   });
 
-  it("should error the pipeline when the lineEnding is invalid", async () => {
+  it("should fail the pipeline when the lineEnding is invalid", async () => {
     const input = "./package.json";
     const output = "./third-party-licenses.txt";
     const lineEnding = "not a valid line ending";
@@ -90,11 +107,15 @@ describe("main", () => {
       jest.requireActual("../src/main");
     });
 
-    expect(mockedError).toHaveBeenCalledTimes(1);
-    expect(mockedError).toHaveBeenCalledWith("The given line ending is not valid");
+    await cycleEventLoop();
+
+    expect(mockedSetFailed).toHaveBeenCalledTimes(1);
+    expect(mockedSetFailed).toHaveBeenCalledWith(
+      "The given line ending 'not a valid line ending' is not valid"
+    );
   });
 
-  it("should error the pipeline when generate-license-file throws with an Error", async () => {
+  it("should fail the pipeline when generate-license-file throws with an Error", async () => {
     const expectedErrorMessage = "Error in Generate-License-File";
 
     const input = "./package.json";
@@ -113,11 +134,11 @@ describe("main", () => {
 
     await cycleEventLoop();
 
-    expect(mockedError).toHaveBeenCalledTimes(1);
-    expect(mockedError).toHaveBeenCalledWith(expectedErrorMessage);
+    expect(mockedSetFailed).toHaveBeenCalledTimes(1);
+    expect(mockedSetFailed).toHaveBeenCalledWith(expectedErrorMessage);
   });
 
-  it("should error the pipeline when generate-license-file throws with a string", async () => {
+  it("should fail the pipeline when generate-license-file throws with a string", async () => {
     const expectedErrorMessage = "Error in Generate-License-File";
 
     const input = "./package.json";
@@ -136,11 +157,11 @@ describe("main", () => {
 
     await cycleEventLoop();
 
-    expect(mockedError).toHaveBeenCalledTimes(1);
-    expect(mockedError).toHaveBeenCalledWith(expectedErrorMessage);
+    expect(mockedSetFailed).toHaveBeenCalledTimes(1);
+    expect(mockedSetFailed).toHaveBeenCalledWith(expectedErrorMessage);
   });
 
-  it("should error the pipeline when generate-license-file throws an unknown object", async () => {
+  it("should fail the pipeline when generate-license-file throws an unknown object", async () => {
     const expectedErrorMessage = "Unknown error in Generate-License-File";
 
     const input = "./package.json";
@@ -159,16 +180,16 @@ describe("main", () => {
 
     await cycleEventLoop();
 
-    expect(mockedError).toHaveBeenCalledTimes(1);
-    expect(mockedError).toHaveBeenCalledWith(expectedErrorMessage);
+    expect(mockedSetFailed).toHaveBeenCalledTimes(1);
+    expect(mockedSetFailed).toHaveBeenCalledWith(expectedErrorMessage);
   });
 
   const mockInput = (value: string) => {
-    when(mockedGetInput).calledWith("input").mockReturnValue(value);
+    when(mockedGetInput).calledWith("input", { required: true }).mockReturnValue(value);
   };
 
   const mockOutput = (value: string) => {
-    when(mockedGetInput).calledWith("output").mockReturnValue(value);
+    when(mockedGetInput).calledWith("output", { required: true }).mockReturnValue(value);
   };
 
   const mockLineEnding = (value: string) => {

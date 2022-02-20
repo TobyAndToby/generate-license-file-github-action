@@ -12,7 +12,7 @@ const main = async () => {
 
 const runGitHubAction = async () => {
   const packageJsonLocationInput = getInput("input", { required: true });
-  const licenseFileLocationInput = getInput("output");
+  const licenseFileLocationInput = getInput("output", { required: true });
   const lineEndingInput = getInput("lineEnding");
 
   const lineEnding = parseLineEnding(lineEndingInput);
@@ -41,7 +41,7 @@ const parseLineEnding = (lineEndingInput: string): LineEnding | undefined => {
 
   const validEol = isValidEol(lineEndingInput);
   if (!validEol) {
-    throw new Error("The given line ending is not valid");
+    throw new Error(`The given line ending '${lineEndingInput}' is not valid`);
   }
 
   return lineEndingInput;
