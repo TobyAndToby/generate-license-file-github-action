@@ -1,5 +1,5 @@
 import { getInput, setFailed } from "@actions/core";
-import { generateLicenseFile } from "generate-license-file";
+import { generateLicenseFile, LineEnding } from "generate-license-file";
 import { isValidEol } from "generate-license-file/dist/generateLicenseFile";
 
 const main = async () => {
@@ -11,17 +11,13 @@ const main = async () => {
 };
 
 const runGitHubAction = async () => {
-  const packageJsonLocation = getInput("input");
-  const licenseFileLocation = getInput("output");
-  const lineEnding = getInput("lineEnding");
+  const packageJsonLocationInput = getInput("input", { required: true });
+  const licenseFileLocationInput = getInput("output");
+  const lineEndingInput = getInput("lineEnding");
 
-  const validEol = isValidEol(lineEnding);
-  if (!validEol) {
-    setFailed("The given line ending is not valid");
-    return;
-  }
+  const lineEnding = parseLineEnding(lineEndingInput);
 
-  await generateLicenseFile(packageJsonLocation, licenseFileLocation, lineEnding);
+  await generateLicenseFile(packageJsonLocationInput, licenseFileLocationInput, lineEnding);
 };
 
 const handleErrorInGitHubAction = (thrown: unknown) => {
@@ -36,6 +32,19 @@ const handleErrorInGitHubAction = (thrown: unknown) => {
   }
 
   setFailed("Unknown error in Generate-License-File");
+};
+
+const parseLineEnding = (lineEndingInput: string): LineEnding | undefined => {
+  if (lineEndingInput === "") {
+    return undefined;
+  }
+
+  const validEol = isValidEol(lineEndingInput);
+  if (!validEol) {
+    throw new Error("The given line ending is not valid");
+  }
+
+  return lineEndingInput;
 };
 
 (async () => {
