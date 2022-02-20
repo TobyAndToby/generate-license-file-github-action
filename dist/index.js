@@ -16114,8 +16114,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core_1 = __nccwpck_require__(2186);
-const generateLicenseFile_1 = __nccwpck_require__(3904);
 const generate_license_file_1 = __nccwpck_require__(4972);
+const generateLicenseFile_1 = __nccwpck_require__(3904);
 const main = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
         yield runGitHubAction();
@@ -16125,26 +16125,35 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 const runGitHubAction = () => __awaiter(void 0, void 0, void 0, function* () {
-    const packageJsonLocation = (0, core_1.getInput)("input");
-    const licenseFileLocation = (0, core_1.getInput)("output");
-    const lineEnding = (0, core_1.getInput)("lineEnding");
-    const validEol = (0, generateLicenseFile_1.isValidEol)(lineEnding);
-    if (!validEol) {
-        (0, core_1.error)("The given line ending is not valid");
-        return;
-    }
-    yield (0, generate_license_file_1.generateLicenseFile)(packageJsonLocation, licenseFileLocation, lineEnding);
+    const packageJsonLocationInput = (0, core_1.getInput)("input", { required: true });
+    const licenseFileLocationInput = (0, core_1.getInput)("output", { required: true });
+    const lineEndingInput = (0, core_1.getInput)("lineEnding");
+    (0, core_1.info)(`Using package.json location: ${packageJsonLocationInput}`);
+    (0, core_1.info)(`Using license file location: ${licenseFileLocationInput}`);
+    (0, core_1.info)(`Using line ending: ${lineEndingInput}`);
+    const lineEnding = parseLineEnding(lineEndingInput);
+    yield (0, generate_license_file_1.generateLicenseFile)(packageJsonLocationInput, licenseFileLocationInput, lineEnding);
 });
 const handleErrorInGitHubAction = (thrown) => {
     if (thrown instanceof Error) {
-        (0, core_1.error)(thrown.message);
+        (0, core_1.setFailed)(thrown.message);
         return;
     }
     if (typeof thrown === "string") {
-        (0, core_1.error)(thrown);
+        (0, core_1.setFailed)(thrown);
         return;
     }
-    (0, core_1.error)("Unknown error in Generate-License-File");
+    (0, core_1.setFailed)("Unknown error in Generate-License-File");
+};
+const parseLineEnding = (lineEndingInput) => {
+    if (lineEndingInput === "") {
+        return undefined;
+    }
+    const validEol = (0, generateLicenseFile_1.isValidEol)(lineEndingInput);
+    if (!validEol) {
+        throw new Error(`The given line ending '${lineEndingInput}' is not valid`);
+    }
+    return lineEndingInput;
 };
 (() => __awaiter(void 0, void 0, void 0, function* () {
     yield main();
