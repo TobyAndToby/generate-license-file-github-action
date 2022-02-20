@@ -21,14 +21,20 @@ jobs:
       with:
         node-version: 16
         registry-url: https://registry.npmjs.org/
+
+    - name: npm install
+      run : npm ci
+
     - name: npm install test project
       run : npm ci
       working-directory: ./e2e/test-projects/${{ matrix.package }}
+
     - name: Run generate-license-file
       uses: ./
       with:
         input: './e2e/test-projects/${{ matrix.package }}/package.json'
         output: './e2e/test-projects/${{ matrix.package }}/${{ github.job }}.txt'
+
     - name: Assert generated output
       shell: pwsh
       run: |
@@ -53,15 +59,21 @@ jobs:
       with:
         node-version: 16
         registry-url: https://registry.npmjs.org/
+
+    - name: npm install
+      run : npm ci
+
     - name: npm install test project
       run : npm ci
       working-directory: ./e2e/test-projects/${{ matrix.package }}
+
     - name: Run generate-license-file
       uses: ./
       with:
         input: './e2e/test-projects/${{ matrix.package }}/package.json'
         output: './e2e/test-projects/${{ matrix.package }}/${{ github.job }}.txt'
         lineEnding: 'windows'
+
     - name: Assert generated output
       shell: pwsh
       run: |
@@ -84,15 +96,21 @@ jobs:
       with:
         node-version: 16
         registry-url: https://registry.npmjs.org/
+
+    - name: npm install
+      run : npm ci
+
     - name: npm install test project
       run : npm ci
       working-directory: ./e2e/test-projects/${{ matrix.package }}
+
     - name: Run generate-license-file
       uses: ./
       with:
         input: './e2e/test-projects/${{ matrix.package }}/package.json'
         output: './e2e/test-projects/${{ matrix.package }}/${{ github.job }}.txt'
         lineEnding: 'posix'
+
     - name: Assert generated output
       shell: pwsh
       run: |
