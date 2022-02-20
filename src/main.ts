@@ -17,7 +17,7 @@ const runGitHubAction = async () => {
 
   const validEol = isValidEol(lineEnding);
   if (!validEol) {
-    error("The given line ending is not valid");
+    setFailed("The given line ending is not valid");
     return;
   }
 
@@ -26,16 +26,16 @@ const runGitHubAction = async () => {
 
 const handleErrorInGitHubAction = (thrown: unknown) => {
   if (thrown instanceof Error) {
-    error(thrown.message);
+    setFailed(thrown.message);
     return;
   }
 
   if (typeof thrown === "string") {
-    error(thrown);
+    setFailed(thrown);
     return;
   }
 
-  error("Unknown error in Generate-License-File");
+  setFailed("Unknown error in Generate-License-File");
 };
 
 (async () => {
