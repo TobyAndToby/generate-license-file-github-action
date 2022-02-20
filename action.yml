@@ -11,7 +11,7 @@ inputs:
     required: true
     default: "./third-party-licenses.txt"
   lineEnding:
-    description: "Line ending for the generated file. Uses agent's default line ending if not specified"
+    description: "Line ending for the generated file. Values can be 'windows' or 'posix'. Uses agent's default line ending if not specified"
     required: false  
 runs:
   using: "node16"

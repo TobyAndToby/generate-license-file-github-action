@@ -1,0 +1,81 @@
+name: E2E
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  no-line-ending-given:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        package: [all-have-licenses, missing-license-file]
+        
+    runs-on: ${{ matrix.os }}
+
+    steps:
+    - uses: actions/checkout@v2
+    - run : npm ci
+      working-directory: './e2e/text-projects/${{ matrix.package }}'
+    - uses: ./
+        with:
+          input: './e2e/text-projects/${{ matrix.package }}/package.json'
+          output: './e2e/text-projects/${{ matrix.package }}/${{ github.job }}.txt'
+    - shell: pwsh
+      run: |
+        $expectedLineEnding = "${{ matrix.os }}" -eq "windows-latest" ? "crlf" : "lf";
+
+        $expectedHash = (Get-FileHash "./e2e/text-projects/${{ matrix.package }}/expected-results/$expectedLineEnding.txt").Hash;
+        $actualHash = (Get-FileHash "./e2e/text-projects/${{ matrix.package }}/${{ github.job }}.txt").Hash;
+
+        exit($expectedHash -eq $actualHash ? 0 : 1)
+
+  windows-line-ending-given:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        package: [all-have-licenses, missing-license-file]
+        
+    runs-on: ${{ matrix.os }}
+
+    steps:
+    - uses: actions/checkout@v2
+    - run : npm ci
+      working-directory: './e2e/text-projects/${{ matrix.package }}'
+    - uses: ./
+        with:
+          input: './e2e/text-projects/${{ matrix.package }}/package.json'
+          output: './e2e/text-projects/${{ matrix.package }}/${{ github.job }}.txt'
+          lineEnding: 'windows'
+    - shell: pwsh
+      run: |
+        $expectedHash = (Get-FileHash "./e2e/text-projects/${{ matrix.package }}/expected-results/crlf.txt").Hash;
+        $actualHash = (Get-FileHash "./e2e/text-projects/${{ matrix.package }}/${{ github.job }}.txt").Hash;
+
+        exit($expectedHash -eq $actualHash ? 0 : 1)
+
+  posix-line-ending-given:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        package: [all-have-licenses, missing-license-file]
+        
+    runs-on: ${{ matrix.os }}
+
+    steps:
+    - uses: actions/checkout@v2
+    - run : npm ci
+      working-directory: './e2e/text-projects/${{ matrix.package }}'
+    - uses: ./
+        with:
+          input: './e2e/text-projects/${{ matrix.package }}/package.json'
+          output: './e2e/text-projects/${{ matrix.package }}/${{ github.job }}.txt'
+          lineEnding: 'posix'
+    - shell: pwsh
+      run: |
+        $expectedHash = (Get-FileHash "./e2e/text-projects/${{ matrix.package }}/expected-results/lf.txt").Hash;
+        $actualHash = (Get-FileHash "./e2e/text-projects/${{ matrix.package }}/${{ github.job }}.txt").Hash;
+
+        exit($expectedHash -eq $actualHash ? 0 : 1)
