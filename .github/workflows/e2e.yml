@@ -43,7 +43,8 @@ jobs:
         $expectedHash = (Get-FileHash "./e2e/test-projects/${{ matrix.package }}/expected-results/$expectedLineEnding.txt").Hash;
         $actualHash = (Get-FileHash "./e2e/test-projects/${{ matrix.package }}/${{ github.job }}.txt").Hash;
 
-        Write-Host "Expected: $expectedHash. Actual: $actualHash";
+        Write-Host "Expected: $expectedHash";
+        Write-Host "Actual: $actualHash";
         exit($expectedHash -eq $actualHash ? 0 : 1)
 
   windows-line-ending-given:
@@ -81,7 +82,8 @@ jobs:
         $expectedHash = (Get-FileHash "./e2e/test-projects/${{ matrix.package }}/expected-results/crlf.txt").Hash;
         $actualHash = (Get-FileHash "./e2e/test-projects/${{ matrix.package }}/${{ github.job }}.txt").Hash;
 
-        Write-Host "Expected: $expectedHash. Actual: $actualHash";
+        Write-Host "Expected: $expectedHash";
+        Write-Host "Actual: $actualHash";
         exit($expectedHash -eq $actualHash ? 0 : 1)
 
   posix-line-ending-given:
@@ -119,5 +121,6 @@ jobs:
         $expectedHash = (Get-FileHash "./e2e/test-projects/${{ matrix.package }}/expected-results/lf.txt").Hash;
         $actualHash = (Get-FileHash "./e2e/test-projects/${{ matrix.package }}/${{ github.job }}.txt").Hash;
 
-        Write-Host "Expected: $expectedHash. Actual: $actualHash";
+        Write-Host "Expected: $expectedHash";
+        Write-Host "Actual: $actualHash";
         exit($expectedHash -eq $actualHash ? 0 : 1)
