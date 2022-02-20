@@ -1,6 +1,6 @@
 name: "Generate License File"
 author: "TobyAndToby"
-description: "Generates a text file containing all of the licences for your production dependencies"
+description: "Generate a text file containing all of the licences for your production npm dependencies"
 inputs:
   input:
     description: "Location of the package.json file relative to the repo root"
