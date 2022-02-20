@@ -1,6 +1,6 @@
 import { error, getInput } from "@actions/core";
-import { when } from "jest-when";
 import { generateLicenseFile } from "generate-license-file";
+import { when } from "jest-when";
 
 jest.mock("@actions/core");
 jest.mock("generate-license-file", () => ({
