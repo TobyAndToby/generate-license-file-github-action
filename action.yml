@@ -17,5 +17,5 @@ runs:
   using: "node16"
   main: "./dist/index.js"
 branding:
-  color: "dark-grey"
+  color: "gray-dark"
   icon: "align-left"
